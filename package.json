@@ -1,0 +1,9 @@
+{
+  "name": "chat-realtime-sockets-root",
+  "version": "1.0.0",
+  "description": "Root configuration for real-time socket chat system deployment",
+  "scripts": {
+    "build": "npm install --prefix server",
+    "start": "npm start --prefix server"
+  }
+}

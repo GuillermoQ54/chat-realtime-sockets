@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VibeChat - Canales de Comunicación en Tiempo Real</title>
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Main Background Effects -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- AUTHENTICATION SCREEN -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="logo">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C6.47715 2 2 6.47715 2 12C2 14.2863 2.76449 16.3942 4.0538 18.083L2.24264 20.9142C1.9056 21.4429 2.285 22.1388 2.91421 22.1388H7.31885C7.94042 22.1388 8.52843 21.8488 8.90422 21.3559L9.7562 20.2383C10.4795 20.4735 11.2335 20.6 12 20.6C17.5228 20.6 22 16.1228 22 10.6C22 5.07715 17.5228 2 12 2Z" fill="url(#logo-grad)"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#8B5CF6"/>
+                <stop offset="1" stop-color="#3B82F6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1>VibeChat</h1>
+        </div>
+        <p class="subtitle">Mensajería en tiempo real segura, fluida y moderna</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tab-login" class="tab-btn active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+        <button id="tab-register" class="tab-btn" onclick="switchAuthTab('register')">Registrarse</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-username">Usuario</label>
+          <input type="text" id="login-username" placeholder="Tu apodo (ej. alex_99)" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Contraseña</label>
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <span>Ingresar al Chat</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form hidden" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="reg-username">Nombre de Usuario</label>
+          <input type="text" id="reg-username" placeholder="Solo letras, números y _ (3-15 caracteres)" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="reg-password">Contraseña</label>
+          <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-success">
+          <span>Crear Cuenta</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CHAT CONTAINER SCREEN -->
+  <div id="chat-screen" class="chat-screen hidden">
+    <div class="chat-wrapper">
+      
+      <!-- SIDEBAR -->
+      <aside id="chat-sidebar" class="chat-sidebar">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+          <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.47715 2 2 6.47715 2 12C2 14.2863 2.76449 16.3942 4.0538 18.083L2.24264 20.9142C1.9056 21.4429 2.285 22.1388 2.91421 22.1388H7.31885C7.94042 22.1388 8.52843 21.8488 8.90422 21.3559L9.7562 20.2383C10.4795 20.4735 11.2335 20.6 12 20.6C17.5228 20.6 22 16.1228 22 10.6C22 5.07715 17.5228 2 12 2Z" fill="url(#logo-grad-sidebar)"/>
+              <defs>
+                <linearGradient id="logo-grad-sidebar" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#8B5CF6"/>
+                  <stop offset="1" stop-color="#3B82F6"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span>VibeChat</span>
+          </div>
+          <button class="mobile-close-btn" onclick="toggleSidebar()" aria-label="Cerrar panel lateral">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Current User Profile Card -->
+        <div class="user-profile">
+          <div class="user-avatar">
+            <span id="my-avatar-char">U</span>
+          </div>
+          <div class="user-details">
+            <span id="my-username" class="username">NombreUsuario</span>
+            <div class="connection-status">
+              <span class="status-dot online"></span>
+              <span id="connection-state-text" class="status-text">Conectado</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active/Online Users Panel -->
+        <div class="online-section">
+          <div class="section-title">
+            <h3>Usuarios Conectados</h3>
+            <span id="active-users-count" class="badge">0</span>
+          </div>
+          <ul id="users-list" class="users-list">
+            <!-- Dynamically populated -->
+          </ul>
+        </div>
+
+        <!-- Sidebar Footer Action -->
+        <div class="sidebar-footer">
+          <button onclick="handleLogout()" class="btn btn-outline btn-block">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN CHAT VIEW -->
+      <main class="chat-main">
+        <!-- Main Chat Header -->
+        <header class="chat-header">
+          <div class="header-info">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Abrir panel lateral">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <div class="channel-info">
+              <h2># general</h2>
+              <p class="channel-description">Sala global de chat en tiempo real</p>
+            </div>
+          </div>
+          
+          <!-- Connection State Indicator Badge -->
+          <div id="net-badge" class="net-badge connected">
+            <span class="net-pulse"></span>
+            <span id="net-badge-text">En línea</span>
+          </div>
+        </header>
+
+        <!-- Messages Viewport -->
+        <div id="messages-container" class="messages-container">
+          <!-- Dynamically populated with chat:message messages -->
+          <div class="welcome-box">
+            <div class="welcome-icon">💬</div>
+            <h3>¡Bienvenido al canal general!</h3>
+            <p>Este es el inicio del historial de mensajes guardados del servidor. Los mensajes son seguros y filtrados contra inyecciones HTML.</p>
+          </div>
+        </div>
+
+        <!-- Input Actions Form -->
+        <form id="chat-form" class="chat-form" onsubmit="sendMessage(event)">
+          <div class="input-wrapper">
+            <input type="text" id="message-input" placeholder="Escribe un mensaje aquí..." maxlength="500" required autocomplete="off">
+            <button type="submit" class="send-btn" aria-label="Enviar mensaje">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+          </div>
+        </form>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Socket.IO library served from backend automatically -->
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- Application Client Javascript code -->
+  <script src="app.js"></script>
+</body>
+</html>
