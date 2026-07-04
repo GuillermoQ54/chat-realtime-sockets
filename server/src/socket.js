@@ -7,18 +7,6 @@ const connectedUsers = {};
 // Map of socket.id -> Array of timestamps (for rate limiting)
 const messageTimestamps = {};
 
-// Simple HTML escaping to prevent XSS
-function escapeHtml(str) {
-  if (typeof str !== 'string') return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
-}
-
 /**
  * Configure socket.io events and middlewares
  * @param {object} io - Socket.io server instance
@@ -109,11 +97,8 @@ function setupSockets(io) {
         messageTimestamps[socket.id].push(now);
         // ----------------------------------------
         
-        // Sanitize content against XSS
-        const sanitizedContent = escapeHtml(content);
-        
         // Save to DB and broadcast
-        const savedMessage = saveMessage(username, sanitizedContent);
+        const savedMessage = saveMessage(username, content);
         io.emit('chat:message', savedMessage);
       } catch (error) {
         console.error(`Error procesando mensaje de ${username}:`, error);
